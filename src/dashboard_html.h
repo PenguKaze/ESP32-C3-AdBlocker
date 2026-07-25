@@ -17,30 +17,72 @@ th{background:#21262d;color:#8b949e}tr:hover td{background:#1c2128}
 button{background:#21262d;color:#c9d1d9;border:1px solid #30363d;border-radius:5px;padding:4px 9px;cursor:pointer}
 button:hover{background:#30363d}.ban{color:#f85149}input{background:#0d1117;border:1px solid #30363d;color:#c9d1d9;border-radius:5px;padding:6px}
 h2{font-size:14px;color:#8b949e;margin:18px 0 8px}
+details{background:#161b22;border:1px solid #30363d;border-radius:8px;margin-bottom:12px;overflow:hidden}
+summary{padding:12px 16px;cursor:pointer;user-select:none;font-weight:600;font-size:14px;list-style:none;display:flex;align-items:center;gap:8px}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'▶';font-size:10px;color:#8b949e;transition:transform .2s}
+details[open] summary::before{transform:rotate(90deg)}
+details[open] summary{border-bottom:1px solid #30363d}
+.detail-body{padding:12px 16px}
 </style></head><body>
 <header><h1>C3 AdBlock <span id=host></span></h1></header><div class=wrap>
 <div class=cards id=sys></div>
-<h2>CLIENTS</h2><table id=ct><thead><tr><th>Client</th><th>MAC</th><th>Blocked</th><th>Allowed</th><th></th></tr></thead><tbody></tbody></table>
+
+<h2>CLIENTS</h2>
+<table id=ct><thead><tr><th>Client</th><th>MAC</th><th>Blocked</th><th>Allowed</th><th></th></tr></thead><tbody></tbody></table>
+
 <h2>CUSTOM BLOCKED DOMAINS</h2>
 <div style=margin-bottom:8px><input id=dom placeholder="ads.example.com" size=30><button onclick=addDom()>Block domain</button></div>
 <table id=cl><tbody></tbody></table>
-<h2>BLOCKLIST &mdash; UPLOAD</h2>
+
+<details open>
+<summary>Blocklist</summary>
+<div class=detail-body>
+<h2 style=margin-top:0>UPLOAD</h2>
 <form id=upf style=margin-bottom:6px><input type=file id=blf accept=.bin><button>Upload blocklist</button> <span id=upmsg style=color:#8b949e></span></form>
 <div style="color:#8b949e;font-size:12px;margin-bottom:18px">build <code>blocklist.bin</code> with <code>tools/build_blocklist.py</code>, then upload here &mdash; no USB</div>
-<h2>BLOCKLIST &mdash; REMOTE AUTO-UPDATE</h2>
+<h2>REMOTE AUTO-UPDATE</h2>
 <div style=margin-bottom:6px><input id=uurl placeholder="https://host/blocklist.bin" size=40> every <input id=uiv size=2 value=24>h
 <button onclick=saveUpd()>Save</button> <button onclick=fetchNow()>Fetch now</button></div>
-<div style="color:#8b949e;font-size:12px;margin-bottom:18px">device pulls a prebuilt <code>blocklist.bin</code> on a schedule. last: <span id=ustat>&mdash;</span></div>
-<h2>DHCP SERVER <span id=dhcpst class=tag></span></h2>
-<div style=margin-bottom:18px><button onclick=toggleDhcp()>Enable / Disable DHCP</button>
-<span style="color:#8b949e;font-size:12px;margin-left:8px">disables router DHCP for you &mdash; C3 hands out its own IP as DNS</span></div>
-<h2>WIFI NETWORK</h2>
+<div style="color:#8b949e;font-size:12px">device pulls a prebuilt <code>blocklist.bin</code> on a schedule. last: <span id=ustat>&mdash;</span></div>
+</div></details>
+
+<details open>
+<summary>Network</summary>
+<div class=detail-body>
+<h2 style=margin-top:0>WIFI NETWORK</h2>
 <div style=margin-bottom:6px>Current: <span id=wifi style=color:#3fb950></span></div>
 <div style=margin-bottom:18px><input id=wssid placeholder="New SSID" size=20> <input id=wpass type=password placeholder="New password" size=20>
 <button onclick=saveWifi()>Change WiFi</button> <span id=wmsg style=color:#8b949e></span></div>
-<h2>FIRMWARE &mdash; OTA UPDATE</h2>
+<h2>DHCP SERVER <span id=dhcpst class=tag></span></h2>
+<div><button onclick=toggleDhcp()>Enable / Disable DHCP</button>
+<span style="color:#8b949e;font-size:12px;margin-left:8px">disables router DHCP for you &mdash; C3 hands out its own IP as DNS</span></div>
+</div></details>
+
+<details open>
+<summary>Security</summary>
+<div class=detail-body>
+<h2 style=margin-top:0>DASHBOARD PASSWORD</h2>
+<div style=margin-bottom:6px><input id=pwcur type=password placeholder="Current password (not needed if auth disabled)" size=30> <input id=pwnew type=password placeholder="New password" size=20> <input id=pwcfm type=password placeholder="Confirm new password" size=20>
+<button onclick=savePw()>Change Password</button> <span id=pwmsg style=color:#8b949e></span></div>
+<div style="color:#8b949e;font-size:12px;margin-bottom:12px">min 6 characters &mdash; you'll need the new password for your next login</div>
+<div>Web authentication: <span id=authst class=tag></span>
+<button onclick=toggleAuth() id=authbtn>Enable / Disable Auth</button>
+<div style="color:#f85149;font-size:12px;margin-top:4px">WARNING: Anyone on your network can flash firmware and change settings when auth is disabled</div></div>
+</div></details>
+
+<details>
+<summary>Advanced</summary>
+<div class=detail-body>
+<h2 style=margin-top:0>FIRMWARE &mdash; OTA UPDATE</h2>
 <form id=fwf style=margin-bottom:6px><input type=file id=fwb accept=.bin><button>Flash firmware</button> <span id=fwmsg style=color:#8b949e></span></form>
 <div style="color:#8b949e;font-size:12px;margin-bottom:18px">upload <code>.pio/build/c3/firmware.bin</code> &mdash; device verifies it and reboots into it</div>
+<h2>FACTORY RESET</h2>
+<div style=margin-bottom:6px"><input id=rstconfirm placeholder="Type RESET" size=12>
+<button onclick=factoryReset()>Erase all settings</button> <span id=rstmsg style=color:#8b949e></span></div>
+<div style="color:#f85149;font-size:12px">erases WiFi, password, custom domains, bans, blocklist, and update config &mdash; device reboots into setup mode</div>
+</div></details>
+
 </div><script>
 let T='';
 function fmt(n){return n.toLocaleString()}
@@ -62,6 +104,8 @@ if(document.activeElement!=uiv)uiv.value=s.upiv||24;
 ustat.textContent=s.upstat||'—';
 dhcpst.textContent=s.dhcp?'ON':'OFF';
 dhcpst.style.color=s.dhcp?'#3fb950':'#8b949e';
+authst.textContent=s.auth?'ENABLED':'DISABLED';
+authst.style.color=s.auth?'#3fb950':'#f85149';
 wifi.textContent=s.wifi||'—';}
 function addDom(){let d=dom.value.trim();if(d){fetch(mut('/addblock?d='+encodeURIComponent(d))).then(()=>{dom.value='';load()})}}
 function saveUpd(){fetch(mut('/setupdate?u='+encodeURIComponent(uurl.value.trim())+'&h='+(parseInt(uiv.value)||24))).then(load)}
@@ -69,6 +113,14 @@ function fetchNow(){ustat.textContent='fetching...';fetch(mut('/fetchnow')).then
 function toggleDhcp(){fetch(mut('/dhcp')).then(r=>r.text()).then(t=>{alert(t);load()})}
 function saveWifi(){let s=wssid.value.trim(),p=wpass.value.trim();if(!s){wmsg.textContent='enter SSID';return}
 wmsg.textContent='saving...';fetch(mut('/setwifi?ssid='+encodeURIComponent(s)+'&pass='+encodeURIComponent(p))).then(r=>r.text()).then(t=>{wmsg.textContent=t;})}
+function savePw(){let c=pwcur.value.trim(),n=pwnew.value.trim(),m=pwcfm.value.trim();
+if(!c||!n){pwmsg.textContent='fill all fields';return}
+if(n.length<6){pwmsg.textContent='min 6 characters';return}
+if(n!==m){pwmsg.textContent='passwords do not match';return}
+pwmsg.textContent='saving...';fetch(mut('/setpassword?current='+encodeURIComponent(c)+'&newpass='+encodeURIComponent(n)+'&confirm='+encodeURIComponent(m))).then(r=>r.text()).then(t=>{pwmsg.textContent=t;if(t==='password changed successfully'){pwcur.value='';pwnew.value='';pwcfm.value='';}})}
+function toggleAuth(){fetch(mut('/toggleauth')).then(r=>r.text()).then(t=>{load()})}
+function factoryReset(){let c=rstconfirm.value.trim();if(c!=='RESET'){rstmsg.textContent='type RESET to confirm';return}
+rstmsg.textContent='erasing...';fetch(mut('/factoryreset?confirm='+encodeURIComponent(c))).then(r=>r.text()).then(t=>{rstmsg.textContent=t;})}
 fwf.onsubmit=async e=>{e.preventDefault();let f=fwb.files[0];if(!f)return;fwmsg.textContent='flashing '+(f.size/1048576).toFixed(2)+' MB...';
 let fd=new FormData();fd.append('f',f);
 try{let r=await fetch(mut('/update'),{method:'POST',body:fd});fwmsg.textContent=r.ok?'rebooting, reconnect in ~15s':'failed: '+await r.text();}

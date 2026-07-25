@@ -614,6 +614,7 @@ static void handleDhcp() {
 // ---- auth (Basic Auth + CSRF token) ----
 String authPassword;
 String authToken;
+bool authEnabled = true;
 
 static const char B64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static String b64encode(const String& s) {
@@ -643,15 +644,23 @@ static void loadAuth() {
   if (f) {
     authPassword = f.readStringUntil('\n'); authPassword.trim();
     authToken = f.readStringUntil('\n'); authToken.trim();
+    String enabledLine = f.readStringUntil('\n'); enabledLine.trim();
+    if (enabledLine.length() > 0) authEnabled = (enabledLine != "0");
     f.close();
   }
   if (authPassword.length() == 0) {
     genRandomPassword();
     File fo = LittleFS.open("/auth.cfg", "w");
-    if (fo) { fo.println(authPassword); fo.println(authToken); fo.close(); }
+    if (fo) { fo.println(authPassword); fo.println(authToken); fo.println("0"); fo.close(); }
+    authEnabled = false;
   }
 }
+static void saveAuthCfg() {
+  File fo = LittleFS.open("/auth.cfg", "w");
+  if (fo) { fo.println(authPassword); fo.println(authToken); fo.println(authEnabled ? "1" : "0"); fo.close(); }
+}
 static bool checkAuth() {
+  if (!authEnabled) return true;
   String expected = "Basic " + b64encode("admin:" + authPassword);
   return web.header("Authorization") == expected;
 }
@@ -696,6 +705,7 @@ static void handleStats() {
              ",\"heap\":" + ESP.getFreeHeap() + ",\"uptime\":\"" + ut + "\"" +
              ",\"bloom\":\"" + jesc(bloomStr) + "\",\"pending\":" + pendingCount +
              ",\"dhcp\":" + (dhcpEnabled ? "true" : "false") +
+             ",\"auth\":" + (authEnabled ? "true" : "false") +
              ",\"wifi\":\"" + jesc(WiFi.SSID()) + "\"" +
              ",\"token\":\"" + jesc(authToken) + "\"" +
              ",\"upurl\":\"" + jesc(updateUrl) + "\",\"upiv\":" + updateIntervalH +
@@ -766,6 +776,72 @@ static void handleSetWifi() {
   if (ssid.length() == 0) { web.send(400, "text/plain", "missing ssid"); return; }
   saveWifiCfg(ssid, pass);
   web.send(200, "text/plain", "saved — rebooting...");
+  delay(500);
+  ESP.restart();
+}
+
+static void handleSetPassword() {
+  if (!checkAuth()) { requireAuth(); return; }
+  if (!checkToken()) { web.send(403, "text/plain", "bad token"); return; }
+  String current = web.arg("current");
+  String newPass = web.arg("newpass");
+  String confirm = web.arg("confirm");
+  if (newPass.length() == 0) {
+    web.send(400, "text/plain", "missing new password");
+    return;
+  }
+  if (authEnabled) {
+    if (current.length() == 0) {
+      web.send(400, "text/plain", "current password required");
+      return;
+    }
+    if (current != authPassword) {
+      web.send(403, "text/plain", "current password incorrect");
+      return;
+    }
+  }
+  if (newPass.length() < 6) {
+    web.send(400, "text/plain", "new password must be at least 6 characters");
+    return;
+  }
+  if (newPass != confirm) {
+    web.send(400, "text/plain", "new password and confirmation do not match");
+    return;
+  }
+  authPassword = newPass;
+  saveAuthCfg();
+  web.send(200, "text/plain", "password changed successfully");
+  LOGN("[cfg] dashboard password updated");
+}
+
+static void handleToggleAuth() {
+  if (!checkAuth()) { requireAuth(); return; }
+  if (!checkToken()) { web.send(403, "text/plain", "bad token"); return; }
+  authEnabled = !authEnabled;
+  saveAuthCfg();
+  String msg = authEnabled ? "auth enabled" : "auth disabled";
+  web.send(200, "text/plain", msg);
+  LOG("[cfg] %s\n", msg.c_str());
+}
+
+static void handleFactoryReset() {
+  if (!checkAuth()) { requireAuth(); return; }
+  if (!checkToken()) { web.send(403, "text/plain", "bad token"); return; }
+  String confirm = web.arg("confirm");
+  if (confirm != "RESET") {
+    web.send(400, "text/plain", "type RESET to confirm factory reset");
+    return;
+  }
+  LOGN("[reset] erasing all config files...");
+  LittleFS.remove("/auth.cfg");
+  LittleFS.remove("/wifi.cfg");
+  LittleFS.remove("/custom.txt");
+  LittleFS.remove("/banned.txt");
+  LittleFS.remove("/update.cfg");
+  LittleFS.remove("/dhcp.cfg");
+  LittleFS.remove("/blocklist.bin");
+  LittleFS.remove("/blocklist.new");
+  web.send(200, "text/plain", "factory reset done — rebooting...");
   delay(500);
   ESP.restart();
 }
@@ -1118,6 +1194,9 @@ void setup() {
   });
   web.on("/dhcp", handleDhcpToggle);
   web.on("/setwifi", handleSetWifi);
+  web.on("/setpassword", handleSetPassword);
+  web.on("/toggleauth", handleToggleAuth);
+  web.on("/factoryreset", handleFactoryReset);
   web.begin();
 
   ArduinoOTA.setHostname("c3adblock");
