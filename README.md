@@ -1,5 +1,9 @@
 # ESP32-C3-AdBlocker
 
+> **Forked from [M-Abozaid/esp32-c3-adblock](https://github.com/M-Abozaid/esp32-c3-adblock)** —
+> the original ESP32-C3 DNS ad-blocker. This version adds significant improvements
+> including Bloom filter, async forwarding, and a full web dashboard.
+
 A **Pi-hole-style DNS ad-blocker** that runs on a **$2 ESP32-C3** — *no PSRAM required*.
 
 The trick everyone misses: you don't need to keep the blocklist in RAM. Store the
@@ -432,9 +436,12 @@ Releases with auto-generated release notes. Assets:
 
 ## Credits
 
-Inspired by [s60sc/ESP32_AdBlocker](https://github.com/s60sc/ESP32_AdBlocker) — the
-"answer 0.0.0.0 for blocklisted domains" idea. This is an independent from-scratch
-implementation focused on the hash-in-flash optimization for PSRAM-less chips.
+Forked from [M-Abozaid/esp32-c3-adblock](https://github.com/M-Abozaid/esp32-c3-adblock) —
+the original ESP32-C3 DNS ad-blocker with hash-in-flash optimization. This version adds
+Bloom filter, async forwarding, TCP DNS, AAAA sinkhole, web dashboard, and more.
+
+Also inspired by [s60sc/ESP32_AdBlocker](https://github.com/s60sc/ESP32_AdBlocker) — the
+"answer 0.0.0.0 for blocklisted domains" idea.
 
 ## License
 

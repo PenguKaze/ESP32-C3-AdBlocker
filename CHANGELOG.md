@@ -10,10 +10,13 @@
   - Advanced (collapsed) — Firmware OTA + Factory Reset
 - Replaced `LOGN` (Serial.println) calls with `LOG` (Serial.printf) for formatted debug output in password change, auth toggle, and factory reset handlers.
 - **Firmware OTA help text updated** — removed confusing `.pio/build/c3/firmware.bin` path reference, now links to source repo and tells users to build from source for their board.
+- **License compliance and attribution** — updated LICENSE to credit M-Abozaid as original author; added forked-from note and credits section in README.
 
 ### Files Changed
 - `src/dashboard_html.h` — Reorganized all dashboard sections into collapsible groups; added details/summary elements with proper open/closed defaults; updated firmware OTA help text
 - `src/main.cpp` — Fixed LOGN to LOG calls for printf-style formatting
+- `LICENSE` — Added M-Abozaid copyright
+- `README.md` — Added forked-from note and updated Credits section
 
 ### Testing
 - Verified: All 7 element IDs present in HTML (upload, uploadstatus, dhcp, remotelist, firmware, factoryreset, resetStatus)
