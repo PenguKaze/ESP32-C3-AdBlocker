@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ESP32-C3 AdBlocker — Quick Start Guide</title>
+<style>
+body{font:16px system-ui,-apple-system,sans-serif;margin:0;background:#0d1117;color:#c9d1d9;line-height:1.7}
+.wrap{max-width:600px;margin:0 auto;padding:24px 20px 60px}
+h1{font-size:24px;margin:0 0 4px}
+h1 span{color:#3fb950}
+.sub{color:#8b949e;font-size:14px;margin-bottom:24px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:20px;margin-bottom:18px}
+.card h2{font-size:17px;margin:0 0 12px;color:#c9d1d9}
+.card ol{margin:0;padding-left:20px}
+.card li{margin-bottom:10px}
+.card li b{color:#3fb950}
+code{background:#21262d;border-radius:4px;padding:2px 6px;font-size:14px}
+.step-num{display:inline-block;width:24px;height:24px;border-radius:50%;background:#238636;color:#fff;font-weight:600;font-size:13px;text-align:center;line-height:24px;margin-right:6px}
+.info{background:#1c2128;border:1px solid #30363d;border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:14px;color:#8b949e}
+.info b{color:#c9d1d9}
+.footer{text-align:center;color:#484f58;font-size:13px;margin-top:30px}
+a{color:#58a6ff;text-decoration:none}
+a:hover{text-decoration:underline}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #30363d}
+th{color:#8b949e;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>ESP32-C3 <span>AdBlocker</span></h1>
+<p class="sub">Quick Start Guide — Block ads for your entire network in 2 minutes.</p>
+
+<div class="card">
+<h2>What's This?</h2>
+<p>A tiny device that blocks <b>140,000+</b> ad, tracker, and malware domains for <b>every device</b> on your WiFi — phones, laptops, smart TVs, tablets. No software to install on each device.</p>
+</div>
+
+<div class="card">
+<h2>Setup</h2>
+<ol>
+<li><b><span class="step-num">1</span> Power On</b><br>Plug the board into any USB power adapter (phone charger, power bank, etc.)</li>
+<li><b><span class="step-num">2</span> Connect to Setup WiFi</b><br>On your phone or laptop, connect to:<br><code>C3AdBlock-Setup</code> (open network, no password)</li>
+<li><b><span class="step-num">3</span> Open Setup Page</b><br>Open <b>Chrome</b> or <b>Edge</b> browser and go to:<br><code>http://192.168.4.1</code></li>
+<li><b><span class="step-num">4</span> Enter Home WiFi</b><br>Select your home WiFi network and enter the password.</li>
+<li><b><span class="step-num">5</span> Done!</b><br>The board will restart and connect to your home WiFi. All devices on your network are now protected.</li>
+</ol>
+</div>
+
+<div class="card">
+<h2>Viewing Your Dashboard</h2>
+<ol>
+<li>Find the board's IP address (check your router's device list)</li>
+<li>Open <b>Chrome</b> or <b>Edge</b> and go to: <code>http://&lt;IP_ADDRESS&gt;</code></li>
+<li>Username: anything | Password: printed on serial console at boot</li>
+</ol>
+</div>
+
+<div class="card">
+<h2>Troubleshooting</h2>
+<table>
+<tr><th>Problem</th><th>Solution</th></tr>
+<tr><td>Can't find C3AdBlock-Setup WiFi</td><td>Unplug and re-plug the board</td></tr>
+<tr><td>Setup page won't open</td><td>Make sure you're using Chrome or Edge (not Safari/Firefox)</td></tr>
+<tr><td>Ads still showing</td><td>Restart the WiFi on your phone/laptop</td></tr>
+<tr><td>Board disconnects</td><td>Check USB power connection</td></tr>
+</table>
+</div>
+
+<div class="info">
+<b>Need help?</b> Visit the <a href="https://github.com/engkon6/ESP32-C3-AdBlocker">GitHub repository</a> for documentation and support.
+</div>
+
+<div class="footer">
+ESP32-C3 AdBlocker &middot; Open Source (MIT License)
+</div>
+</div>
+</body>
+</html>
