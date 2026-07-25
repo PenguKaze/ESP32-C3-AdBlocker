@@ -437,8 +437,12 @@ Releases with auto-generated release notes. Assets:
 ## Credits
 
 Forked from [M-Abozaid/esp32-c3-adblock](https://github.com/M-Abozaid/esp32-c3-adblock) —
-the original ESP32-C3 DNS ad-blocker with hash-in-flash optimization. This version adds
-Bloom filter, async forwarding, TCP DNS, AAAA sinkhole, web dashboard, and more.
+the original ESP32-C3 DNS ad-blocker with hash-in-flash optimization.
+
+Thanks to [9M2PJU](https://github.com/9M2PJU/9M2PJU-ESP32-C3-AdBlocker) for major contributions
+including Bloom filter, async DNS, TCP DNS, web flasher, and CI/CD workflows.
+
+This version adds full web dashboard, AAAA sinkhole, and more.
 
 Also inspired by [s60sc/ESP32_AdBlocker](https://github.com/s60sc/ESP32_AdBlocker) — the
 "answer 0.0.0.0 for blocklisted domains" idea.
