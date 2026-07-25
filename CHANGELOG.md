@@ -9,15 +9,17 @@
   - Security (expanded) — Password Change + Auth Toggle
   - Advanced (collapsed) — Firmware OTA + Factory Reset
 - Replaced `LOGN` (Serial.println) calls with `LOG` (Serial.printf) for formatted debug output in password change, auth toggle, and factory reset handlers.
+- **Firmware OTA help text updated** — removed confusing `.pio/build/c3/firmware.bin` path reference, now links to source repo and tells users to build from source for their board.
 
 ### Files Changed
-- `src/dashboard_html.h` — Reorganized all dashboard sections into collapsible groups; added details/summary elements with proper open/closed defaults
+- `src/dashboard_html.h` — Reorganized all dashboard sections into collapsible groups; added details/summary elements with proper open/closed defaults; updated firmware OTA help text
 - `src/main.cpp` — Fixed LOGN to LOG calls for printf-style formatting
 
 ### Testing
 - Verified: All 7 element IDs present in HTML (upload, uploadstatus, dhcp, remotelist, firmware, factoryreset, resetStatus)
 - Verified: 3 sections expanded by default (Blocklist, Network, Security), Advanced collapsed
 - Verified: All endpoints functional via curl (setpassword, toggleauth, factoryreset)
+- Verified: Firmware OTA help text links to GitHub repo and no longer references PlatformIO build path
 
 ---
 
